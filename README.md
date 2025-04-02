@@ -127,7 +127,6 @@ docker compose down -v
 
 ## 📝 Notes
 
-- `prometheus.yml` is not used and can be safely removed
 - Docker Compose maps `config.yml` into the LiteLLM container
 - PostgreSQL is used only if you enable persistence in LiteLLM
 
