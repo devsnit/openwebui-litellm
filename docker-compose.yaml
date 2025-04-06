@@ -1,49 +1,50 @@
 services:
-    openwebui:
-        image: ghcr.io/open-webui/open-webui:main
-        container_name: open-webui
-        ports:
-            - "3000:8080"
-        volumes:
-            - open-webui:/app/backend/data
-        extra_hosts:
-            - "host.docker.internal:host-gateway"
-        environment:
-            - WEBUI_AUTH=False
-            - OPENAI_API_KEY=${MASTER_KEY}
-            - OPENAI_API_BASE_URL=http://host.docker.internal:4000/v1
-        restart: always
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3000:8080"
+    volumes:
+      - open-webui:/app/backend/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - WEBUI_AUTH=False
+      - OPENAI_API_KEY=${MASTER_KEY}
+      - OPENAI_API_BASE_URL=http://host.docker.internal:4000/v1
+    restart: always
 
-    litellm:
-        image: ghcr.io/berriai/litellm-database:main-latest
-        container_name: litellm
-        env_file:
-            - .env
-        ports:
-            - "4000:4000"
-        volumes:
-            - ./config.yml:/app/config.yaml
-        command: --config /app/config.yaml --port 4000
-        restart: always
-        environment:
-            DATABASE_URL: "postgresql://llmproxy:dbpassword9090@db:5432/litellm"
-            STORE_MODEL_IN_DB: "True"
+  litellm:
+    image: ghcr.io/berriai/litellm-database:main-latest
+    container_name: litellm
+    env_file:
+      - .env
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./config.yml:/app/config.yaml
+    command: --config /app/config.yaml --port 4000
+    restart: always
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
+      STORE_MODEL_IN_DB: "True"
 
-    db:
-        image: postgres
-        restart: always
-        environment:
-            POSTGRES_DB: litellm
-            POSTGRES_USER: llmproxy
-            POSTGRES_PASSWORD: dbpassword9090
-        volumes:
-            - db-storage:/var/lib/postgresql/data
-        healthcheck:
-            test: ["CMD-SHELL", "pg_isready -d litellm -U llmproxy"]
-            interval: 1s
-            timeout: 5s
-            retries: 10
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db-storage:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
 
 volumes:
-    open-webui:
-    db-storage:
+  open-webui:
+  db-storage:
+

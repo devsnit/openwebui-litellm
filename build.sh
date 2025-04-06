@@ -44,6 +44,15 @@ CODESTRAL_API_KEY=${input_codestral:-$CODESTRAL_API_KEY}
 read -p "➡️  Enter GROQ_API_KEY [${GROQ_API_KEY:-your_groq_api_key}]: " input_groq
 GROQ_API_KEY=${input_groq:-$GROQ_API_KEY}
 
+read -p "➡️  Enter POSTGRES_DB [${POSTGRES_DB:-litellm}]: " input_db
+POSTGRES_DB=${input_db:-$POSTGRES_DB}
+
+read -p "➡️  Enter POSTGRES_USER [${POSTGRES_USER:-llmproxy}]: " input_user
+POSTGRES_USER=${input_user:-$POSTGRES_USER}
+
+read -p "➡️  Enter POSTGRES_PASSWORD [${POSTGRES_PASSWORD:-your_db_password}]: " input_pass
+POSTGRES_PASSWORD=${input_pass:-$POSTGRES_PASSWORD}
+
 # Save to .env
 cat > .env <<EOF
 MASTER_KEY=$MASTER_KEY
@@ -52,6 +61,10 @@ OPENAI_API_KEY=$OPENAI_API_KEY
 DEEPSEEK_API_KEY=$DEEPSEEK_API_KEY
 CODESTRAL_API_KEY=$CODESTRAL_API_KEY
 GROQ_API_KEY=$GROQ_API_KEY
+
+POSTGRES_DB=$POSTGRES_DB
+POSTGRES_USER=$POSTGRES_USER
+POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 EOF
 
 echo -e "${GREEN}✅ .env updated successfully.${RESET}"
@@ -70,3 +83,4 @@ fi
 
 print_section_header "🏁 Ready! Use ./run.sh to start services."
 echo -e "${GREEN}💡 You can now run the stack with: ./run.sh${RESET}"
+
