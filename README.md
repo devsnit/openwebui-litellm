@@ -34,7 +34,7 @@ This repository provides a clean, production-ready setup that combines [Open Web
 ### 1. Clone the Repo
 
 ```bash
-git clone https://github.com/<your-username>/openwebui-litellm.git
+git clone https://github.com/devsnit/openwebui-litellm.git
 cd openwebui-litellm
 ```
 
